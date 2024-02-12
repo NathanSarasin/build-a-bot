@@ -1,32 +1,36 @@
 <template>
-  <div>
+  <div class="content">
+  <button class="add-to-cart" @click="addToCart()">Add to cart</button>
     <div class="top-row">
       <div class="top part">
-        <img :src="availableParts.heads[selectedHeadIndex].imageUrl" alt="head" />
+        <div class="robot-name">{{ selectedRobot.head.title }}
+        <!-- v-if includes or removes item v-show only sets display:none -->
+        <span v-if="selectedRobot.head.onSale" class="sale">Sale</span></div>
+        <img :src="selectedRobot.head.imageUrl" alt="head" />
         <button @click="selectPreviousHead()" class="prev-selector">&#9668;</button>
         <button @click="selectNextHead()" class="next-selector">&#9658;</button>
       </div>
     </div>
     <div class="middle-row">
       <div class="left part">
-        <img :src="availableParts.arms[selectedLeftArmIndex].imageUrl" alt="left arm" />
+        <img :src="selectedRobot.leftArm.imageUrl" alt="left arm" />
         <button @click="selectPreviousLeftArm()" class="prev-selector">&#9650;</button>
         <button @click="selectNextLeftArm()" class="next-selector">&#9660;</button>
       </div>
       <div class="center part">
-        <img :src="availableParts.torsos[selectedTorsoIndex].imageUrl" alt="torso" />
+        <img :src="selectedRobot.torso.imageUrl" alt="torso" />
         <button @click="selectPreviousTorso()" class="prev-selector">&#9668;</button>
         <button @click="selectNextTorso()" class="next-selector">&#9658;</button>
       </div>
       <div class="right part">
-        <img :src="availableParts.arms[selectedRightArmIndex].imageUrl" alt="right arm" />
+        <img :src="selectedRobot.rightArm.imageUrl" alt="right arm" />
         <button @click="selectPreviousRightArm()" class="prev-selector">&#9650;</button>
         <button @click="selectNextRightArm()" class="next-selector">&#9660;</button>
       </div>
     </div>
     <div class="bottom-row">
       <div class="bottom part">
-        <img :src="availableParts.bases[selectedBaseIndex].imageUrl" alt="base" />
+        <img :src="selectedRobot.base.imageUrl" alt="base" />
         <button @click="selectPreviousBase()" class="prev-selector">&#9668;</button>
         <button @click="selectNextBase()" class="next-selector">&#9658;</button>
       </div>
@@ -35,7 +39,7 @@
 </template>
 
 <script>
-import parts from "../data/parts";
+import parts from '../data/parts';
 
 function getNextValidIndex(index, length) {
   const incrementedIndex = index + 1;
@@ -48,7 +52,7 @@ function getPreviousValidIndex(index, length) {
 }
 
 export default {
-  name: "RobotBuilder",
+  name: 'RobotBuilder',
   data() {
     return {
       availableParts: parts,
@@ -57,68 +61,91 @@ export default {
       selectedRightArmIndex: 0,
       selectedTorsoIndex: 0,
       selectedBaseIndex: 0,
+      cart: [],
     };
+  },
+  // need it to be computed property to have the automatic binding for the object
+  computed: {
+    selectedRobot() {
+      return {
+        head: this.availableParts.heads[this.selectedHeadIndex],
+        leftArm: this.availableParts.arms[this.selectedLeftArmIndex],
+        torso: this.availableParts.torsos[this.selectedTorsoIndex],
+        rightArm: this.availableParts.arms[this.selectedRightArmIndex],
+        base: this.availableParts.bases[this.selectedBaseIndex],
+      };
+    },
   },
   methods: {
     selectNextHead() {
       this.selectedHeadIndex = getNextValidIndex(
         this.selectedHeadIndex,
-        this.availableParts.heads.length
+        this.availableParts.heads.length,
       );
     },
     selectPreviousHead() {
       this.selectedHeadIndex = getPreviousValidIndex(
         this.selectedHeadIndex,
-        this.availableParts.heads.length
+        this.availableParts.heads.length,
       );
     },
     selectNextLeftArm() {
       this.selectedLeftArmIndex = getPreviousValidIndex(
         this.selectedLeftArmIndex,
-        this.availableParts.arms.length
+        this.availableParts.arms.length,
       );
     },
     selectPreviousLeftArm() {
       this.selectedLeftArmIndex = getPreviousValidIndex(
         this.selectedLeftArmIndex,
-        this.availableParts.arms.length
+        this.availableParts.arms.length,
       );
     },
     selectNextRightArm() {
       this.selectedRightArmIndex = getPreviousValidIndex(
         this.selectedRightArmIndex,
-        this.availableParts.arms.length
+        this.availableParts.arms.length,
       );
     },
     selectPreviousRightArm() {
       this.selectedRightArmIndex = getPreviousValidIndex(
         this.selectedRightArmIndex,
-        this.availableParts.arms.length
+        this.availableParts.arms.length,
       );
     },
     selectNextTorso() {
       this.selectedTorsoIndex = getPreviousValidIndex(
         this.selectedTorsoIndex,
-        this.availableParts.torsos.length
+        this.availableParts.torsos.length,
       );
     },
     selectPreviousTorso() {
       this.selectedTorsoIndex = getPreviousValidIndex(
         this.selectedTorsoIndex,
-        this.availableParts.torsos.length
+        this.availableParts.torsos.length,
       );
     },
     selectNextBase() {
       this.selectedBaseIndex = getPreviousValidIndex(
         this.selectedBaseIndex,
-        this.availableParts.bases.length
+        this.availableParts.bases.length,
       );
     },
     selectPreviousBase() {
       this.selectedBaseIndex = getPreviousValidIndex(
         this.selectedBaseIndex,
-        this.availableParts.bases.length
+        this.availableParts.bases.length,
       );
+    },
+    addToCart() {
+      const robot = this.selectedRobot;
+      const cost = robot.head.cost +
+        robot.leftArm.cost +
+        robot.rightArm.cost +
+        robot.torso.cost +
+        robot.base.cost;
+
+      this.cart.push({...robot, cost});
     },
   },
 };
@@ -231,5 +258,28 @@ export default {
 
 .right .next-selector {
   right: -3px;
+}
+
+.robot-name {
+    position: absolute;
+    top: -25px;
+    text-align: center;
+    width: 100%;
+}
+
+.sale {
+  color: red;
+}
+
+.content {
+  position: relative;
+}
+
+.add-to-cart{
+  position:absolute;
+  right: 30px;
+  width: 220px;
+  padding: 3px;
+  font-size: 16px;
 }
 </style>
