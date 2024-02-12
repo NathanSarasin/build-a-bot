@@ -54,137 +54,112 @@
   </div>
 </template>
 
-<script>
-import { computed } from 'vue';
+<script setup>
+import { computed, ref, onMounted } from 'vue';
 import parts from '../data/parts';
 import { toCurrency } from '../shared/formatters';
 
-export default {
-  name: 'RobotBuilder',
-  setup() {
-    const availableParts = parts;
-    let selectedHeadIndex = 0;
-    let selectedLeftArmIndex = 0;
-    let selectedRightArmIndex = 0;
-    let selectedTorsoIndex = 0;
-    let selectedBaseIndex = 0;
-    const cart = [];
+const availableParts = parts;
+const selectedHeadIndex = ref(0);
+const selectedLeftArmIndex = ref(0);
+const selectedRightArmIndex = ref(0);
+const selectedTorsoIndex = ref(0);
+const selectedBaseIndex = ref(0);
+const cart = ref([]);
 
-    function getNextValidIndex(index, length) {
-      const incrementedIndex = index + 1;
-      return incrementedIndex > length - 1 ? 0 : incrementedIndex;
-    }
+onMounted(() => console.log('mounted'));
 
-    function getPreviousValidIndex(index, length) {
-      const deprecatedIndex = index - 1;
-      return deprecatedIndex < 0 ? length - 1 : deprecatedIndex;
-    }
+function getNextValidIndex(index, length) {
+  const incrementedIndex = index + 1;
+  return incrementedIndex > length - 1 ? 0 : incrementedIndex;
+}
 
-    const selectedRobot = computed(() => ({
-      head: availableParts.heads[selectedHeadIndex],
-      leftArm: availableParts.arms[selectedLeftArmIndex],
-      torso: availableParts.torsos[selectedTorsoIndex],
-      rightArm: availableParts.arms[selectedRightArmIndex],
-      base: availableParts.bases[selectedBaseIndex],
-    }));
+function getPreviousValidIndex(index, length) {
+  const deprecatedIndex = index - 1;
+  return deprecatedIndex < 0 ? length - 1 : deprecatedIndex;
+}
 
-    // #region Part Selector Methods
-    const selectNextHead = () => {
-      selectedHeadIndex = getNextValidIndex(
-        selectedHeadIndex,
-        availableParts.heads.length,
-      );
-    };
-    const selectPreviousHead = () => {
-      selectedHeadIndex = getPreviousValidIndex(
-        selectedHeadIndex,
-        availableParts.heads.length,
-      );
-    };
-    const selectNextLeftArm = () => {
-      selectedLeftArmIndex = getPreviousValidIndex(
-        selectedLeftArmIndex,
-        availableParts.arms.length,
-      );
-    };
-    const selectPreviousLeftArm = () => {
-      selectedLeftArmIndex = getPreviousValidIndex(
-        selectedLeftArmIndex,
-        availableParts.arms.length,
-      );
-    };
-    const selectNextRightArm = () => {
-      selectedRightArmIndex = getPreviousValidIndex(
-        selectedRightArmIndex,
-        availableParts.arms.length,
-      );
-    };
-    const selectPreviousRightArm = () => {
-      selectedRightArmIndex = getPreviousValidIndex(
-        selectedRightArmIndex,
-        availableParts.arms.length,
-      );
-    };
-    const selectNextTorso = () => {
-      selectedTorsoIndex = getPreviousValidIndex(
-        selectedTorsoIndex,
-        availableParts.torsos.length,
-      );
-    };
-    const selectPreviousTorso = () => {
-      selectedTorsoIndex = getPreviousValidIndex(
-        selectedTorsoIndex,
-        availableParts.torsos.length,
-      );
-    };
-    const selectNextBase = () => {
-      selectedBaseIndex = getPreviousValidIndex(
-        selectedBaseIndex,
-        availableParts.bases.length,
-      );
-    };
-    const selectPreviousBase = () => {
-      selectedBaseIndex = getPreviousValidIndex(
-        selectedBaseIndex,
-        availableParts.bases.length,
-      );
-    };
-    // endregion
-    const addToCart = () => {
-      const robot = selectedRobot;
-      const cost = robot.head.cost +
-        robot.leftArm.cost +
-        robot.rightArm.cost +
-        robot.torso.cost +
-        robot.base.cost;
+const selectedRobot = computed(() => ({
+  head: availableParts.heads[selectedHeadIndex.value],
+  leftArm: availableParts.arms[selectedLeftArmIndex.value],
+  torso: availableParts.torsos[selectedTorsoIndex.value],
+  rightArm: availableParts.arms[selectedRightArmIndex.value],
+  base: availableParts.bases[selectedBaseIndex.value],
+}));
 
-      cart.push({ ...robot, cost });
-    };
-
-    return {
-      availableParts,
-      selectedHeadIndex,
-      selectedLeftArmIndex,
-      selectedRightArmIndex,
-      selectedTorsoIndex,
-      selectedBaseIndex,
-      cart,
-      selectedRobot,
-      toCurrency,
-      selectNextHead,
-      selectPreviousHead,
-      selectNextLeftArm,
-      selectPreviousLeftArm,
-      selectNextRightArm,
-      selectPreviousRightArm,
-      selectNextTorso,
-      selectPreviousTorso,
-      selectNextBase,
-      selectPreviousBase,
-      addToCart,
-    };
-  },
+// #region Part Selector Methods
+const selectNextHead = () => {
+  selectedHeadIndex.value = getNextValidIndex(
+    selectedHeadIndex.value,
+    availableParts.heads.length,
+  );
 };
+const selectPreviousHead = () => {
+  selectedHeadIndex.value = getPreviousValidIndex(
+    selectedHeadIndex.value,
+    availableParts.heads.length,
+  );
+};
+const selectNextLeftArm = () => {
+  selectedLeftArmIndex.value = getNextValidIndex(
+    selectedLeftArmIndex.value,
+    availableParts.arms.length,
+  );
+};
+const selectPreviousLeftArm = () => {
+  selectedLeftArmIndex.value = getPreviousValidIndex(
+    selectedLeftArmIndex.value,
+    availableParts.arms.length,
+  );
+};
+const selectNextRightArm = () => {
+  selectedRightArmIndex.value = getNextValidIndex(
+    selectedRightArmIndex.value,
+    availableParts.arms.length,
+  );
+};
+const selectPreviousRightArm = () => {
+  selectedRightArmIndex.value = getPreviousValidIndex(
+    selectedRightArmIndex.value,
+    availableParts.arms.length,
+  );
+};
+const selectNextTorso = () => {
+  selectedTorsoIndex.value = getNextValidIndex(
+    selectedTorsoIndex.value,
+    availableParts.torsos.length,
+  );
+};
+const selectPreviousTorso = () => {
+  selectedTorsoIndex.value = getPreviousValidIndex(
+    selectedTorsoIndex.value,
+    availableParts.torsos.length,
+  );
+};
+const selectNextBase = () => {
+  selectedBaseIndex.value = getNextValidIndex(
+    selectedBaseIndex.value,
+    availableParts.bases.length,
+  );
+};
+const selectPreviousBase = () => {
+  selectedBaseIndex.value = getPreviousValidIndex(
+    selectedBaseIndex.value,
+    availableParts.bases.length,
+  );
+};
+// endregion
+const addToCart = () => {
+  const robot = selectedRobot.value;
+  const cost = robot.head.cost +
+    robot.leftArm.cost +
+    robot.rightArm.cost +
+    robot.torso.cost +
+    robot.base.cost;
+
+  cart.value.push({ ...robot, cost });
+};
+
 </script>
 
 <style>
