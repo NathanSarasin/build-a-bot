@@ -4,19 +4,21 @@
       <ul>
         <li class="nav-item">
           <img class="logo" src="./assets/build-a-bot-logo.png" alt="logo" />
-          Build-A-Bot
+          Build-a-Bot
         </li>
       </ul>
     </nav>
   </header>
   <main>
-  <!--<HomePage msg="Welcome to You vue.js app" /> -->
-    <RobotBuilder></RobotBuilder>
+    <!-- <HomePage msg="Welcome to Your Vue.js App" /> -->
+    <RobotBuilder />
   </main>
 </template>
 
 <script>
+// import HomePage from './home/HomePage.vue';
 import RobotBuilder from './build/RobotBuilder.vue';
+// import ProductSearch from './search/ProductSearch.vue';
 
 export default {
   name: 'App',
@@ -25,6 +27,17 @@ export default {
   },
 };
 </script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(to bottom, #555, #999);
+  background-attachment: fixed;
+}
+</style>
 
 <style scoped>
 main {
